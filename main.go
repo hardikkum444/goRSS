@@ -1,34 +1,42 @@
 package main
 
-import(
-    "fmt"
-    "log"
-    "os"
-    "github.com/joho/godotenv"
-    "github.com/go-chi/chi"
-    "net/http"
+import (
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+
+	"github.com/go-chi/chi"
+	"github.com/go-chi/cors"
+	"github.com/joho/godotenv"
 )
 
-func main(){
+func main() {
 
-    godotenv.Load(".env")
+	godotenv.Load(".env")
 
-    portString := os.Getenv("PORT")
+	portString := os.Getenv("PORT")
+	router := chi.NewRouter()
 
-    router := chi.NewRouter()
+	router.Use(cors.Handler(cors.Options{
+		AllowedOrigins:     []string{"https://*", "http://*"},
+		AllowedMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:     []string{"*"},
+		ExposedHeaders:     []string{"Link"},
+		AllowCredentials: false,
+		MaxAge:             300,
+	}))
 
-    server := &http.Server{
-        Handler: router,
-        Addr: ":"+portString,
-    }
+	server := &http.Server{
+		Handler: router,
+		Addr:    ":" + portString,
+	}
 
-    fmt.Println("server will now run on -> " + portString)
+	fmt.Println("server will now run on -> " + portString)
 
-
-    err := server.ListenAndServe()
-
-    if err != nil{
-        log.Fatal(err.Error())
-    }
+	err := server.ListenAndServe()
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
 }
