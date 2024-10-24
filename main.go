@@ -29,7 +29,8 @@ func main() {
 
 	v1router := chi.NewRouter()
 	v1router.Get("/healthz", checkServerHealth)
-	router.Mount("/vi", v1router)
+	v1router.Get("/err", handlerErr)
+	router.Mount("/v1", v1router)
 
 	server := &http.Server{
 		Handler: router,
