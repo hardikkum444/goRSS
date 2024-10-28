@@ -6,9 +6,9 @@ import (
 	"strings"
 )
 
-func getAPIKey(headers http.Header) (string, error) {
+func GetAPIKey(headers http.Header) (string, error) {
 
-	val := headers.Get("Authorisation")
+	val := headers.Get("Authorization")
 
 	if val == "" {
 		return "", errors.New("no authorisation info found")
